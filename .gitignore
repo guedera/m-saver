@@ -1,3 +1,5 @@
+sprints.md
+
 # Dependencies
 node_modules/
 .pnp
@@ -36,6 +38,3 @@ coverage/
 __pycache__/
 *.py[cod]
 venv/
-
-# md's
-sprints.md
