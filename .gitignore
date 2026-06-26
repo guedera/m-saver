@@ -36,3 +36,6 @@ coverage/
 __pycache__/
 *.py[cod]
 venv/
+
+# md's
+sprints.md
