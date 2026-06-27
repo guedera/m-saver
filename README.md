@@ -1,30 +1,73 @@
 # m-saver
 
-Plataforma web para acompanhamento de finanças pessoais mensais. Pensada para ser simples e acessível tanto no computador quanto no celular.
+Plataforma web para acompanhamento de finanças pessoais. Desenvolvida para uso solo, acessível no computador e no iPhone via Safari.
 
 ## O que é
 
-O m-saver permite registrar entradas e saídas de dinheiro ao longo do mês/meses/ano — salário, mesada, compras, contas, etc. — e exibe um dashboard com um resumo visual do que foi gasto, com o que, e quanto sobrou, e em que conta.
+O m-saver permite registrar entradas e saídas de dinheiro ao longo do tempo — salário, mesada, compras, contas, pix de amigos — e exibe um dashboard com resumo visual do que foi gasto, por qual categoria, em qual conta, e quanto sobrou.
 
-## Funcionalidades previstas
+## Funcionalidades
 
-- Deve ter como cadastrar/registrar um banco, por exemplo (BTG, Itau) ja que cada user tem varios bancos, pra monitorar cada um individualmente. Sempre que um gasto for feito deve-se especificar de onde saiu. assim como com recebimentos (de salario/pix de amigos/mesada...). Pra cadastrar um banco, deve-se exigir a situação atual dela (dinheiro que ela tem hoje), e se necessário deve ser possível atualizar quanto dinheiro ela tem.
+### Contas bancárias
+Cadastre seus bancos (ex: BTG, Itaú) com o saldo atual. Toda operação referencia uma conta, mantendo o saldo sempre atualizado. É possível corrigir o saldo manualmente a qualquer momento.
 
-- Pra registrar uma operação deve-se ser exigido:
-    - Foi gasto ou operação
-    - Valor? (por ex 1952,40 R$) sempre em R$
-    - A categoria (devemos ter uma tabela de categorias que da pra adicionar/remover categorias etc, pra depois conseguirmos acompanhar o gasto por categoria etc). Uma operação pode ter mais de uma categoria (por ex: pedi comida com a namorada, entra a categoria COMIDA e a categoria NAMORADA juntos)
-    - Em que conta a operação foi feita (Itau,BTG...)
+### Operações (entradas e saídas)
+Ao registrar uma operação, você informa:
+- **Tipo:** gasto ou recebimento
+- **Valor** em R$
+- **Categorias** (uma ou mais — ex: COMIDA + NAMORADA)
+- **Conta** de origem ou destino
 
-- Categorias, uma tabela de categorias.
+### Categorias
+Tabela de categorias totalmente gerenciável (adicionar, renomear, remover). Uma operação pode ter múltiplas categorias, permitindo análises cruzadas no dashboard.
 
-- Deve ser possível cadastrar uma meta (juntar x R$), o dashboard
+### Metas
+Cadastre metas de economia (ex: juntar R$ 5.000). O dashboard exibe o progresso de cada meta.
 
-## Importante
+### Dashboard
+Resumo mensal com navegação por período: total de entradas, total de saídas, saldo por conta, distribuição de gastos por categoria e progresso das metas.
 
-Deve-se manter a aplicação o mais simples possível, afinal só eu usarei-a, de modo que seja possível acessá-la do meu celular via safari (iphone). fazendo deploy onde precisar, mas de maneira que fique a mais barata possível. 
+---
 
-## Stack
+## Arquitetura
 
-A definir.
+Para mais detalhes, veja [`arquitetura.md`](arquitetura.md).
 
+### Backend — FastAPI (Python)
+FastAPI foi escolhido pela sua simplicidade, tipagem nativa com Pydantic, documentação automática via Swagger e excelente performance para APIs REST. Para um projeto solo, elimina o boilerplate sem sacrificar estrutura.
+
+### Frontend — React + Vite + TailwindCSS
+SPA leve com Vite para build rápido e Tailwind para estilização mobile-first sem esforço. Hospedado gratuitamente no Vercel.
+
+### Banco de dados — SQL com SQLAlchemy + Alembic
+SQL é a escolha natural para dados financeiros relacionais (contas → operações ↔ categorias). SQLAlchemy como ORM e Alembic para migrations controladas.
+
+| Ambiente        | Banco             | Justificativa                                   |
+|-----------------|-------------------|-------------------------------------------------|
+| Desenvolvimento | SQLite            | Zero configuração, arquivo local               |
+| Produção        | PostgreSQL (Neon) | Free tier generoso, confiável, pronto para crescer |
+
+### Deploy
+| Componente | Plataforma        | Custo        |
+|------------|-------------------|--------------|
+| Frontend   | Vercel            | Gratuito     |
+| Backend    | Render            | Gratuito (free tier) |
+| Banco      | Neon (PostgreSQL) | Gratuito     |
+
+---
+
+## Stack resumida
+
+| Camada     | Tecnologia              |
+|------------|-------------------------|
+| Backend    | Python 3.12 + FastAPI   |
+| ORM        | SQLAlchemy + Alembic    |
+| Frontend   | React + Vite + Tailwind |
+| DB (dev)   | SQLite                  |
+| DB (prod)  | PostgreSQL (Neon)       |
+| Deploy BE  | Render                  |
+| Deploy FE  | Vercel                  |
+
+## Como rodar
+
+> Em breve — será detalhado durante o desenvolvimento.
