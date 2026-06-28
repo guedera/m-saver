@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from app.routers import contas, categorias, operacoes
+from app.routers import contas, categorias, operacoes, metas, dashboard
 
 load_dotenv()
 
@@ -21,6 +21,8 @@ app.add_middleware(
 app.include_router(contas.router)
 app.include_router(categorias.router)
 app.include_router(operacoes.router)
+app.include_router(metas.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/health")
