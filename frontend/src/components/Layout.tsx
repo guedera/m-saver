@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import BottomNav from './BottomNav'
 
 export default function Layout() {
@@ -9,6 +10,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <BottomNav />
+      <Toaster position="top-center" richColors closeButton />
     </div>
   )
 }
