@@ -34,7 +34,9 @@ pnpm-debug.log*
 # Testing
 coverage/
 
-# Python (caso use algum script)
+# Python
 __pycache__/
 *.py[cod]
 venv/
+.venv/
+*.db        # banco SQLite de desenvolvimento
