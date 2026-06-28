@@ -30,6 +30,11 @@ class Operacao(Base):
         back_populates="operacao", cascade="all, delete-orphan"
     )
 
+    @property
+    def categorias(self) -> list["Categoria"]:
+        """Atalho usado pelo schema de resposta para serializar as categorias diretamente."""
+        return [oc.categoria for oc in self.operacao_categorias]
+
 
 class OperacaoCategoria(Base):
     """Tabela de junção N:N entre Operacao e Categoria."""
