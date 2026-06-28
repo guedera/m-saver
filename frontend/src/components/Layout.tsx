@@ -4,13 +4,19 @@ import BottomNav from './BottomNav'
 
 export default function Layout() {
   return (
-    // min-h-svh garante que o conteúdo ocupa a tela inteira no Safari/iPhone
-    <div className="min-h-svh bg-gray-50 flex flex-col">
+    <div className="min-h-svh bg-slate-950 flex flex-col">
       <main className="flex-1 pb-16 overflow-y-auto">
         <Outlet />
       </main>
       <BottomNav />
-      <Toaster position="top-center" richColors closeButton />
+      <Toaster
+        position="top-center"
+        richColors
+        closeButton
+        toastOptions={{
+          style: { background: '#1e293b', border: '1px solid #334155', color: '#f1f5f9' },
+        }}
+      />
     </div>
   )
 }

@@ -11,12 +11,14 @@ type ModalState =
   | { type: 'criar' }
   | { type: 'editar-saldo'; conta: Conta }
 
+const LABEL = 'text-sm text-slate-400 block mb-1'
+const INPUT = 'w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500'
+const BTN_PRIMARY = 'mt-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-semibold py-2.5 rounded-lg disabled:opacity-40 transition-colors glow-cyan'
+
 export default function Contas() {
   const queryClient = useQueryClient()
   const [modal, setModal] = useState<ModalState | null>(null)
   const [deletingId, setDeletingId] = useState<number | null>(null)
-
-  // form fields
   const [nome, setNome] = useState('')
   const [saldoInicial, setSaldoInicial] = useState('')
   const [novoSaldo, setNovoSaldo] = useState('')
@@ -31,7 +33,7 @@ export default function Contas() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contas'] })
       toast.success('Conta criada')
-      fecharModal()
+      setModal(null)
     },
     onError: () => toast.error('Erro ao criar conta'),
   })
@@ -41,7 +43,7 @@ export default function Contas() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contas'] })
       toast.success('Saldo atualizado')
-      fecharModal()
+      setModal(null)
     },
     onError: () => toast.error('Erro ao atualizar saldo'),
   })
@@ -57,18 +59,13 @@ export default function Contas() {
   })
 
   function abrirCriar() {
-    setNome('')
-    setSaldoInicial('')
+    setNome(''); setSaldoInicial('')
     setModal({ type: 'criar' })
   }
 
   function abrirEditarSaldo(conta: Conta) {
     setNovoSaldo(String(conta.saldo_atual))
     setModal({ type: 'editar-saldo', conta })
-  }
-
-  function fecharModal() {
-    setModal(null)
   }
 
   return (
@@ -78,7 +75,7 @@ export default function Contas() {
         action={
           <button
             onClick={abrirCriar}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg"
+            className="flex items-center gap-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-semibold px-3 py-1.5 rounded-lg glow-cyan transition-colors"
           >
             <Plus size={16} />
             Nova
@@ -86,62 +83,33 @@ export default function Contas() {
         }
       />
 
-      {isLoading && (
-        <p className="text-center text-gray-400 text-sm mt-8">Carregando...</p>
-      )}
+      {isLoading && <p className="text-center text-slate-500 text-sm mt-8">Carregando...</p>}
 
       {!isLoading && contas.length === 0 && (
-        <p className="text-center text-gray-400 text-sm mt-8">
-          Nenhuma conta cadastrada.
-        </p>
+        <p className="text-center text-slate-500 text-sm mt-8">Nenhuma conta cadastrada.</p>
       )}
 
-      <ul className="divide-y divide-gray-100 bg-white mx-4 mt-4 rounded-xl shadow-sm overflow-hidden">
+      <ul className="divide-y divide-slate-800 bg-slate-900 mx-4 mt-4 rounded-xl overflow-hidden border border-slate-800">
         {contas.map(conta => (
           <li key={conta.id} className="px-4 py-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">{conta.nome}</p>
-                <p
-                  className={`text-sm font-semibold ${
-                    conta.saldo_atual >= 0 ? 'text-emerald-600' : 'text-red-500'
-                  }`}
-                >
+                <p className="font-medium text-slate-100">{conta.nome}</p>
+                <p className={`text-sm font-semibold ${conta.saldo_atual >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {brl(conta.saldo_atual)}
                 </p>
               </div>
 
               {deletingId === conta.id ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">Remover?</span>
-                  <button
-                    onClick={() => deletar.mutate(conta.id)}
-                    disabled={deletar.isPending}
-                    className="text-sm text-red-600 font-medium"
-                  >
-                    Sim
-                  </button>
-                  <button
-                    onClick={() => setDeletingId(null)}
-                    className="text-sm text-gray-400"
-                  >
-                    Não
-                  </button>
+                  <span className="text-sm text-slate-500">Remover?</span>
+                  <button onClick={() => deletar.mutate(conta.id)} disabled={deletar.isPending} className="text-sm text-rose-400 font-medium">Sim</button>
+                  <button onClick={() => setDeletingId(null)} className="text-sm text-slate-500">Não</button>
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => abrirEditarSaldo(conta)}
-                    className="text-gray-400 hover:text-indigo-600 p-1"
-                  >
-                    <Pencil size={17} />
-                  </button>
-                  <button
-                    onClick={() => setDeletingId(conta.id)}
-                    className="text-gray-400 hover:text-red-500 p-1"
-                  >
-                    <Trash2 size={17} />
-                  </button>
+                  <button onClick={() => abrirEditarSaldo(conta)} className="text-slate-600 hover:text-cyan-400 p-1 transition-colors"><Pencil size={17} /></button>
+                  <button onClick={() => setDeletingId(conta.id)} className="text-slate-600 hover:text-rose-400 p-1 transition-colors"><Trash2 size={17} /></button>
                 </div>
               )}
             </div>
@@ -149,85 +117,32 @@ export default function Contas() {
         ))}
       </ul>
 
-      {/* Modal: criar conta */}
       {modal?.type === 'criar' && (
-        <Modal title="Nova conta" onClose={fecharModal}>
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              criar.mutate()
-            }}
-            className="flex flex-col gap-3"
-          >
+        <Modal title="Nova conta" onClose={() => setModal(null)}>
+          <form onSubmit={e => { e.preventDefault(); criar.mutate() }} className="flex flex-col gap-3">
             <div>
-              <label className="text-sm text-gray-600 block mb-1">Nome</label>
-              <input
-                autoFocus
-                required
-                value={nome}
-                onChange={e => setNome(e.target.value)}
-                placeholder="ex: BTG, Itaú"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <label className={LABEL}>Nome</label>
+              <input autoFocus required value={nome} onChange={e => setNome(e.target.value)} placeholder="ex: BTG, Itaú" className={INPUT} />
             </div>
             <div>
-              <label className="text-sm text-gray-600 block mb-1">
-                Saldo inicial (R$)
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                value={saldoInicial}
-                onChange={e => setSaldoInicial(e.target.value)}
-                placeholder="0,00"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <label className={LABEL}>Saldo inicial (R$)</label>
+              <input type="number" inputMode="decimal" step="0.01" value={saldoInicial} onChange={e => setSaldoInicial(e.target.value)} placeholder="0,00" className={INPUT} />
             </div>
-            <button
-              type="submit"
-              disabled={criar.isPending || !nome.trim()}
-              className="mt-1 bg-indigo-600 text-white text-sm font-medium py-2.5 rounded-lg disabled:opacity-50"
-            >
+            <button type="submit" disabled={criar.isPending || !nome.trim()} className={BTN_PRIMARY}>
               {criar.isPending ? 'Salvando...' : 'Criar conta'}
             </button>
           </form>
         </Modal>
       )}
 
-      {/* Modal: editar saldo */}
       {modal?.type === 'editar-saldo' && (
-        <Modal
-          title={`Saldo — ${modal.conta.nome}`}
-          onClose={fecharModal}
-        >
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              editarSaldo.mutate(modal.conta.id)
-            }}
-            className="flex flex-col gap-3"
-          >
+        <Modal title={`Saldo — ${modal.conta.nome}`} onClose={() => setModal(null)}>
+          <form onSubmit={e => { e.preventDefault(); editarSaldo.mutate(modal.conta.id) }} className="flex flex-col gap-3">
             <div>
-              <label className="text-sm text-gray-600 block mb-1">
-                Novo saldo (R$)
-              </label>
-              <input
-                autoFocus
-                required
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                value={novoSaldo}
-                onChange={e => setNovoSaldo(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <label className={LABEL}>Novo saldo (R$)</label>
+              <input autoFocus required type="number" inputMode="decimal" step="0.01" value={novoSaldo} onChange={e => setNovoSaldo(e.target.value)} className={INPUT} />
             </div>
-            <button
-              type="submit"
-              disabled={editarSaldo.isPending}
-              className="mt-1 bg-indigo-600 text-white text-sm font-medium py-2.5 rounded-lg disabled:opacity-50"
-            >
+            <button type="submit" disabled={editarSaldo.isPending} className={BTN_PRIMARY}>
               {editarSaldo.isPending ? 'Salvando...' : 'Atualizar saldo'}
             </button>
           </form>

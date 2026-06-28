@@ -15,7 +15,7 @@ def listar_categorias(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=CategoriaResponse, status_code=status.HTTP_201_CREATED)
 def criar_categoria(payload: CategoriaCreate, db: Session = Depends(get_db)):
-    categoria = Categoria(nome=payload.nome, cor=payload.cor)
+    categoria = Categoria(nome=payload.nome, cor=payload.cor, tipo=payload.tipo)
     db.add(categoria)
     db.commit()
     db.refresh(categoria)
@@ -32,6 +32,8 @@ def atualizar_categoria(categoria_id: int, payload: CategoriaUpdate, db: Session
         categoria.nome = payload.nome
     if payload.cor is not None:
         categoria.cor = payload.cor
+    if payload.tipo is not None:
+        categoria.tipo = payload.tipo
     db.commit()
     db.refresh(categoria)
     return categoria

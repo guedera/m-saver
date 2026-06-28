@@ -14,4 +14,4 @@ class Conta(Base):
     criado_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Lazy loading padrão — operações só são carregadas quando acessadas
-    operacoes: Mapped[list["Operacao"]] = relationship(back_populates="conta")
+    operacoes: Mapped[list["Operacao"]] = relationship(back_populates="conta", cascade="all, delete-orphan")

@@ -1,1 +1,30 @@
 @import "tailwindcss";
+
+@layer base {
+  /* inputs escuros globais — evita ter que repetir em cada componente */
+  input:not([type="color"]),
+  select,
+  textarea {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    border-color: #334155;
+  }
+
+  input:not([type="color"])::placeholder,
+  textarea::placeholder {
+    color: #64748b;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+  }
+}
+
+@layer utilities {
+  .glow-cyan {
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+  }
+  .glow-cyan-sm {
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.25);
+  }
+}

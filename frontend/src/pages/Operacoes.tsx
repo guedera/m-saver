@@ -29,6 +29,7 @@ export default function Operacoes() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['operacoes'] })
       queryClient.invalidateQueries({ queryKey: ['contas'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
       toast.success('Operação removida')
       setDeletingId(null)
     },
@@ -44,7 +45,7 @@ export default function Operacoes() {
         action={
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg"
+            className="flex items-center gap-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-semibold px-3 py-1.5 rounded-lg glow-cyan transition-colors"
           >
             <Plus size={16} />
             Nova
@@ -53,62 +54,44 @@ export default function Operacoes() {
       />
 
       {/* seletor de mês */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
-        <button
-          onClick={() => setMes(m => navMes(m, -1))}
-          className="p-1 text-gray-400 hover:text-gray-700"
-        >
+      <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+        <button onClick={() => setMes(m => navMes(m, -1))} className="p-1 text-slate-500 hover:text-slate-200 transition-colors">
           <ChevronLeft size={20} />
         </button>
-        <span className="text-sm font-medium text-gray-700 capitalize">
-          {mesLabel(mes)}
-        </span>
-        <button
-          onClick={() => setMes(m => navMes(m, +1))}
-          className="p-1 text-gray-400 hover:text-gray-700"
-        >
+        <span className="text-sm font-medium text-slate-300 capitalize">{mesLabel(mes)}</span>
+        <button onClick={() => setMes(m => navMes(m, +1))} className="p-1 text-slate-500 hover:text-slate-200 transition-colors">
           <ChevronRight size={20} />
         </button>
       </div>
 
-      {isLoading && (
-        <p className="text-center text-gray-400 text-sm mt-8">Carregando...</p>
-      )}
+      {isLoading && <p className="text-center text-slate-500 text-sm mt-8">Carregando...</p>}
 
       {!isLoading && operacoes.length === 0 && (
-        <p className="text-center text-gray-400 text-sm mt-8">
-          Nenhuma operação neste mês.
-        </p>
+        <p className="text-center text-slate-500 text-sm mt-8">Nenhuma operação neste mês.</p>
       )}
 
-      <ul className="divide-y divide-gray-100 bg-white mx-4 mt-4 rounded-xl shadow-sm overflow-hidden">
+      <ul className="divide-y divide-slate-800 bg-slate-900 mx-4 mt-4 rounded-xl overflow-hidden border border-slate-800">
         {operacoes.map(op => (
           <li key={op.id} className="px-4 py-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-start gap-2.5 min-w-0">
-                {/* bolinha colorida por tipo */}
-                <span
-                  className={`mt-1 w-2.5 h-2.5 rounded-full shrink-0 ${
-                    op.tipo === 'gasto' ? 'bg-red-400' : 'bg-emerald-400'
-                  }`}
-                />
+                <span className={`mt-1 w-2.5 h-2.5 rounded-full shrink-0 ${op.tipo === 'gasto' ? 'bg-rose-400' : 'bg-emerald-400'}`} />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-slate-100 truncate">
                     {op.descricao ?? (op.tipo === 'gasto' ? 'Gasto' : 'Recebimento')}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {formatDate(op.data)}
-                    {contaMap[op.conta_id] ? ` · ${contaMap[op.conta_id]}` : ''}
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {formatDate(op.data)}{contaMap[op.conta_id] ? ` · ${contaMap[op.conta_id]}` : ''}
                   </p>
                   {op.categorias.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1.5">
                       {op.categorias.map(cat => (
                         <span
                           key={cat.id}
-                          className="text-xs px-1.5 py-0.5 rounded-full"
+                          className="text-xs px-1.5 py-0.5 rounded-full font-medium"
                           style={{
-                            backgroundColor: (cat.cor ?? '#6366f1') + '22',
-                            color: cat.cor ?? '#6366f1',
+                            backgroundColor: (cat.cor ?? '#22d3ee') + '22',
+                            color: cat.cor ?? '#22d3ee',
                           }}
                         >
                           {cat.nome}
@@ -120,35 +103,16 @@ export default function Operacoes() {
               </div>
 
               <div className="flex flex-col items-end shrink-0 gap-1">
-                <p
-                  className={`text-sm font-semibold ${
-                    op.tipo === 'gasto' ? 'text-red-500' : 'text-emerald-600'
-                  }`}
-                >
+                <p className={`text-sm font-semibold ${op.tipo === 'gasto' ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {op.tipo === 'gasto' ? '−' : '+'}&nbsp;{brl(op.valor)}
                 </p>
-
                 {deletingId === op.id ? (
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => deletar.mutate(op.id)}
-                      disabled={deletar.isPending}
-                      className="text-xs text-red-600 font-medium"
-                    >
-                      Remover
-                    </button>
-                    <button
-                      onClick={() => setDeletingId(null)}
-                      className="text-xs text-gray-400"
-                    >
-                      Cancelar
-                    </button>
+                    <button onClick={() => deletar.mutate(op.id)} disabled={deletar.isPending} className="text-xs text-rose-400 font-medium">Remover</button>
+                    <button onClick={() => setDeletingId(null)} className="text-xs text-slate-500">Cancelar</button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => setDeletingId(op.id)}
-                    className="text-xs text-gray-300 hover:text-red-400 transition-colors"
-                  >
+                  <button onClick={() => setDeletingId(op.id)} className="text-xs text-slate-700 hover:text-rose-400 transition-colors">
                     Excluir
                   </button>
                 )}
@@ -159,10 +123,7 @@ export default function Operacoes() {
       </ul>
 
       {showForm && (
-        <NovaOperacaoModal
-          onClose={() => setShowForm(false)}
-          onSuccess={() => setShowForm(false)}
-        />
+        <NovaOperacaoModal onClose={() => setShowForm(false)} onSuccess={() => setShowForm(false)} />
       )}
     </div>
   )

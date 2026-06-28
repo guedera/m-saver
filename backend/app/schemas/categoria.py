@@ -1,10 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, field_validator
+from app.models.categoria import TipoCategoria
 
 
 class CategoriaCreate(BaseModel):
     nome: str
-    cor: str | None = None  # hex opcional ex: "#FF5733"
+    cor: str | None = None
+    tipo: TipoCategoria = TipoCategoria.gasto
 
     @field_validator("cor")
     @classmethod
@@ -17,6 +19,7 @@ class CategoriaCreate(BaseModel):
 class CategoriaUpdate(BaseModel):
     nome: str | None = None
     cor: str | None = None
+    tipo: TipoCategoria | None = None
 
     @field_validator("cor")
     @classmethod
@@ -32,4 +35,5 @@ class CategoriaResponse(BaseModel):
     id: int
     nome: str
     cor: str | None
+    tipo: TipoCategoria
     criado_em: datetime
