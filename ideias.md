@@ -14,3 +14,9 @@ Ao clicar em uma categoria no dashboard, navegar para a lista de operações fil
 
 ## Testes no celular / ajustes de tamanho
 Garantir que todos os elementos estão bem dimensionados no iPhone (Safari), verificar touch targets, espaçamentos e legibilidade em telas pequenas.
+
+## Compra parcelada em meses
+Suporte a operações parceladas: ao registrar um gasto, informar o número de parcelas e o valor total. O sistema distribui as parcelas nos meses subsequentes automaticamente.
+
+## Tipo de conta "mamãe paga"
+Conta sem saldo próprio — apenas registra operações e seus tipos (categorias). Útil para acompanhar gastos feitos em cartão de outra pessoa, sem afetar o saldo do usuário.
